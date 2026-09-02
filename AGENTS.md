@@ -80,6 +80,8 @@ https://maps.googleapis.com/maps/api/place/textsearch/json
 ## 距離與報價規則
 
 - 正式報價使用 Google Routes API 的開車距離。
+- Routes API 的起點與機場優先使用 Google Place ID，避免裸經緯度被吸附到跑道、塔台或錯誤道路。
+- 路線偏好使用 `TRAFFIC_AWARE_OPTIMAL`，讓結果更接近 Google Maps 「立即出發」的最佳路線。
 - 不要用 Haversine 直線距離假裝正式報價。
 - Google Routes 失敗時，應回傳錯誤或顯示需人工確認。
 - 前端送來的價格不可信，後端必須重新計算。

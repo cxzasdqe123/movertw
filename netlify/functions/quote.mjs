@@ -1,8 +1,32 @@
 const airports = [
-  { code: 'TPE', text: '台灣桃園國際機場 (TPE)', lat: 25.0797, lng: 121.2342 },
-  { code: 'TSA', text: '台北松山機場 (TSA)', lat: 25.0697, lng: 121.5518 },
-  { code: 'RMQ', text: '台中清泉崗機場 (RMQ)', lat: 24.2636, lng: 120.6206 },
-  { code: 'KHH', text: '高雄小港國際機場 (KHH)', lat: 22.5768, lng: 120.3500 },
+  {
+    code: 'TPE',
+    text: '台灣桃園國際機場 (TPE)',
+    placeId: 'ChIJ1RXSYsCfQjQRCbG1qZC2o3A',
+    lat: 25.0804884,
+    lng: 121.2311579,
+  },
+  {
+    code: 'TSA',
+    text: '台北松山機場 (TSA)',
+    placeId: 'ChIJWSYUpPGrQjQROop1ttwNGJM',
+    lat: 25.0675657,
+    lng: 121.5526993,
+  },
+  {
+    code: 'RMQ',
+    text: '台中清泉崗機場 (RMQ)',
+    placeId: 'ChIJcQOEX1MRaTQRJFCKXjMQZFg',
+    lat: 24.2620608,
+    lng: 120.6244181,
+  },
+  {
+    code: 'KHH',
+    text: '高雄小港國際機場 (KHH)',
+    placeId: 'ChIJmbv2P84cbjQRKdFFacSu6hw',
+    lat: 22.5749333,
+    lng: 120.3471544,
+  },
 ];
 
 const airportPricing = {
@@ -65,6 +89,22 @@ const validatePlace = (place) => (
   String(place.address || place.name || place.label || '').trim()
 );
 
+const toRouteWaypoint = (place) => {
+  const placeId = String(place.place_id || place.placeId || '').trim();
+  if (placeId) {
+    return { placeId };
+  }
+
+  return {
+    location: {
+      latLng: {
+        latitude: Number(place.lat),
+        longitude: Number(place.lng),
+      },
+    },
+  };
+};
+
 async function computeDrivingRoute(apiKey, origin, destination) {
   const response = await fetch('https://routes.googleapis.com/directions/v2:computeRoutes', {
     method: 'POST',
@@ -74,24 +114,10 @@ async function computeDrivingRoute(apiKey, origin, destination) {
       'x-goog-fieldmask': 'routes.distanceMeters,routes.duration',
     },
     body: JSON.stringify({
-      origin: {
-        location: {
-          latLng: {
-            latitude: Number(origin.lat),
-            longitude: Number(origin.lng),
-          },
-        },
-      },
-      destination: {
-        location: {
-          latLng: {
-            latitude: destination.lat,
-            longitude: destination.lng,
-          },
-        },
-      },
+      origin: toRouteWaypoint(origin),
+      destination: toRouteWaypoint(destination),
       travelMode: 'DRIVE',
-      routingPreference: 'TRAFFIC_UNAWARE',
+      routingPreference: 'TRAFFIC_AWARE_OPTIMAL',
       languageCode: 'zh-TW',
       units: 'METRIC',
     }),
