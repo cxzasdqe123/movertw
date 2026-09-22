@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <title>車旅所 | 租賃車接送預約平台</title>
+  <title>車旅所 | 機場接送・商務接送</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script>
@@ -34,7 +34,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
       <a href="#" class="flex items-center gap-2">
         <span class="text-xl sm:text-2xl font-bold tracking-widest text-white">車旅所<span class="text-amber-500">.</span></span>
-        <span class="hidden sm:inline-block px-2.5 py-0.5 text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-full">租賃車接送</span>
+        <span class="hidden sm:inline-block px-2.5 py-0.5 text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-full">機場・商務接送</span>
       </a>
       <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
         <a href="#advantages" class="text-slate-300 hover:text-amber-400 transition-colors">品牌優勢</a>
@@ -56,7 +56,7 @@
             機場接送 尊榮安排 <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-600">車旅所</span>
           </h1>
           <p class="text-sm sm:text-base text-slate-400 max-w-2xl mx-auto px-4 leading-relaxed">
-            完整地址可直接試算；地標或模糊名稱可先搜尋候選地點再選擇。此版本不使用 Google API，也不需要後端。
+            從機場往返到商務行程，讓每一段出發都從容。選擇接送服務，查看您的預估車資。
           </p>
         </div>
 
@@ -75,13 +75,13 @@
             </button>
             <button data-tab="general-travel" class="tab-button flex flex-col items-center justify-center p-3 sm:p-5 bg-slate-900 border border-slate-800 text-slate-400 rounded-xl hover:border-slate-700 hover:text-slate-200 transition-all group">
               <div class="tab-icon w-8 h-8 sm:w-12 sm:h-12 bg-slate-800 rounded-full flex items-center justify-center text-slate-400 mb-1.5 sm:mb-3"><i data-lucide="navigation-2" class="w-4 h-4 sm:w-6 sm:h-6"></i></div>
-              <span class="font-extrabold text-sm sm:text-lg">市區單程</span>
-              <span class="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1">點到點接送</span>
+              <span class="font-extrabold text-sm sm:text-lg">商務接送</span>
+              <span class="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1">公司・飯店・會議接送</span>
             </button>
             <button data-tab="emergency" class="tab-button flex flex-col items-center justify-center p-3 sm:p-5 bg-slate-900 border border-slate-800 text-slate-400 rounded-xl hover:border-slate-700 hover:text-slate-200 transition-all group">
               <div class="tab-icon w-8 h-8 sm:w-12 sm:h-12 bg-slate-800 rounded-full flex items-center justify-center text-slate-400 mb-1.5 sm:mb-3"><i data-lucide="clock" class="w-4 h-4 sm:w-6 sm:h-6"></i></div>
               <span class="font-extrabold text-sm sm:text-lg">臨時預約</span>
-              <span class="text-[10px] sm:text-xs text-red-400/80 mt-0.5 sm:mt-1 font-semibold">不保證有車</span>
+              <span class="text-[10px] sm:text-xs text-red-400/80 mt-0.5 sm:mt-1 font-semibold">車輛需另行確認</span>
             </button>
           </div>
         </div>
@@ -93,7 +93,7 @@
                 <i data-lucide="triangle-alert" class="w-5 h-5 shrink-0 mt-0.5 text-red-400"></i>
                 <div>
                   <p class="font-bold text-red-200 mb-1 text-sm sm:text-base">當日臨時預約提醒</p>
-                  <p class="leading-relaxed">臨時預約將由客服協助媒合車輛。若車源不足，可能無法成立訂單。</p>
+                  <p class="leading-relaxed">當日用車請先洽客服確認車輛，實際安排依可用車輛為準。</p>
                 </div>
               </div>
             </div>
@@ -107,7 +107,7 @@
                       <input type="text" id="txtSource" placeholder="例：台北市內湖區內湖路一段629巷42號" autocomplete="off" class="flex-1 min-w-0 bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-3 text-base text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all" />
                       <button type="button" id="searchSourceButton" class="shrink-0 px-3 sm:px-4 py-3 bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-lg text-sm font-bold text-slate-100 transition-all">搜尋</button>
                     </div>
-                    <p id="sourceAddressStatus" class="text-xs text-slate-500">完整地址可直接試算；地標或不確定地址可先搜尋候選。</p>
+                    <p id="sourceAddressStatus" class="text-xs text-slate-500">請輸入完整地址，或搜尋飯店、公司與地標名稱。</p>
                     <div id="sourceResults" class="hidden bg-slate-950 border border-slate-700 rounded-xl overflow-hidden divide-y divide-slate-800 max-h-64 overflow-y-auto premium-scrollbar"></div>
                   </div>
                   <select id="airportSource" class="hidden w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-3 text-base text-slate-100 focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all"></select>
@@ -119,7 +119,7 @@
                       <input type="text" id="txtDest" placeholder="例：台北市信義區信義路五段7號" autocomplete="off" class="flex-1 min-w-0 bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-3 text-base text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all" />
                       <button type="button" id="searchDestButton" class="shrink-0 px-3 sm:px-4 py-3 bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-lg text-sm font-bold text-slate-100 transition-all">搜尋</button>
                     </div>
-                    <p id="destAddressStatus" class="text-xs text-slate-500">完整地址可直接試算；地標或不確定地址可先搜尋候選。</p>
+                    <p id="destAddressStatus" class="text-xs text-slate-500">請輸入完整地址，或搜尋飯店、公司與地標名稱。</p>
                     <div id="destResults" class="hidden bg-slate-950 border border-slate-700 rounded-xl overflow-hidden divide-y divide-slate-800 max-h-64 overflow-y-auto premium-scrollbar"></div>
                   </div>
                   <select id="airportDest" class="hidden w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-3 text-base text-slate-100 focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all"></select>
@@ -136,7 +136,7 @@
                   </div>
                 </div>
                 <div class="md:col-span-5">
-                  <label class="block text-sm sm:text-base font-bold text-slate-300 mb-1.5 sm:mb-2">預定車型</label>
+                  <label class="block text-sm sm:text-base font-bold text-slate-300 mb-1.5 sm:mb-2">選擇車型</label>
                   <select id="vehicleType" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-3 text-base text-slate-100 focus:outline-none focus:ring-2 focus:ring-amber-500/50">
                     <option value="comfort_4">舒適四人座</option>
                     <option value="luxury_import">尊榮進口車 +500</option>
@@ -173,7 +173,7 @@
               </div>
 
               <div class="rounded-xl border border-amber-500/20 bg-amber-500/5 p-3 text-xs sm:text-sm text-amber-100/80 leading-relaxed">
-                完整地址會在試算時自動定位；地標或模糊名稱仍建議按搜尋並選擇候選結果。正式商業版建議改成 Google Places + 後端 Google Routes。
+                請確認上下車地點、乘車時間與車型後，再查看預估車資。
               </div>
 
               <button id="quoteButton" type="submit" class="w-full py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-lg rounded-xl shadow-lg shadow-amber-900/20 transition-all flex items-center justify-center gap-2">
@@ -190,18 +190,18 @@
       <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
         <div class="bg-slate-800/60 border border-slate-700 rounded-2xl p-5">
           <i data-lucide="map-pin" class="w-7 h-7 text-amber-400 mb-3"></i>
-          <h2 class="font-extrabold text-white text-lg mb-2">地址可直填</h2>
-          <p class="text-sm text-slate-400 leading-relaxed">完整地址可直接進入試算；系統會先嘗試定位地址。</p>
+          <h2 class="font-extrabold text-white text-lg mb-2">機場往返</h2>
+          <p class="text-sm text-slate-400 leading-relaxed">出國啟程或返國抵達，依您的航班與行程選擇送機或接機。</p>
         </div>
         <div class="bg-slate-800/60 border border-slate-700 rounded-2xl p-5">
           <i data-lucide="route" class="w-7 h-7 text-amber-400 mb-3"></i>
-          <h2 class="font-extrabold text-white text-lg mb-2">地標可選候選</h2>
-          <p class="text-sm text-slate-400 leading-relaxed">像麗山國中這類地標，仍可先搜尋候選地點，避免拿錯定位。</p>
+          <h2 class="font-extrabold text-white text-lg mb-2">商務接送</h2>
+          <p class="text-sm text-slate-400 leading-relaxed">公司、飯店與會議地點之間的單程接送，配合您的商務行程。</p>
         </div>
         <div class="bg-slate-800/60 border border-slate-700 rounded-2xl p-5">
           <i data-lucide="shield-check" class="w-7 h-7 text-amber-400 mb-3"></i>
-          <h2 class="font-extrabold text-white text-lg mb-2">不暴露 Google Key</h2>
-          <p class="text-sm text-slate-400 leading-relaxed">此版本不使用 Google API。正式版再把 Routes 與報價搬到後端。</p>
+          <h2 class="font-extrabold text-white text-lg mb-2">多元車型</h2>
+          <p class="text-sm text-slate-400 leading-relaxed">依同行人數與行李需求選擇車型，查看車資與加購費用。</p>
         </div>
       </div>
     </section>
@@ -209,8 +209,8 @@
     <section id="services" class="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-slate-950 border-t border-slate-800">
       <div class="max-w-5xl mx-auto text-center">
         <p class="text-xs font-bold tracking-widest text-amber-500 uppercase mb-3">Services</p>
-        <h2 class="text-2xl sm:text-3xl font-black text-white mb-4">送機、接機、市區單程、臨時預約</h2>
-        <p class="text-sm sm:text-base text-slate-400 leading-relaxed max-w-3xl mx-auto">此頁仍是前端 POC。訂單建立、實際派車、付款與最終報價應由後端系統處理。</p>
+        <h2 class="text-2xl sm:text-3xl font-black text-white mb-4">送機、接機、商務接送、臨時預約</h2>
+        <p class="text-sm sm:text-base text-slate-400 leading-relaxed max-w-3xl mx-auto">提供機場送機、接機與商務單程接送。請先查看預估車資，再洽客服確認預約與車輛安排。</p>
       </div>
     </section>
 
@@ -231,16 +231,16 @@
           <button id="closeModal" type="button" class="absolute right-0 top-0 text-slate-500 hover:text-slate-200"><i data-lucide="x" class="w-5 h-5"></i></button>
           <div class="w-14 h-14 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-3"><i data-lucide="sparkles" class="w-7 h-7"></i></div>
           <h3 class="text-xl sm:text-2xl font-extrabold text-white">車資試算結果</h3>
-          <p class="text-xs sm:text-sm text-slate-400 mt-1">目前為前端 POC 試算，正式版應由後端回傳價格。</p>
+          <p class="text-xs sm:text-sm text-slate-400 mt-1">以下為預估費用，實際車資與車輛安排請洽客服確認。</p>
         </div>
         <div class="bg-slate-950/60 border border-slate-800 p-4 rounded-xl space-y-2.5 text-sm">
           <p><span class="text-slate-400">起點：</span><span id="resultSource" class="text-white font-semibold"></span></p>
           <p><span class="text-slate-400">目的地：</span><span id="resultDest" class="text-white font-semibold"></span></p>
-          <p><span class="text-slate-400">距離：</span><span id="resultDistance" class="text-amber-400 font-bold"></span></p>
-          <p><span class="text-slate-400">計價方式：</span><span id="resultMethod" class="text-slate-200"></span></p>
+          <p><span class="text-slate-400">預估路程：</span><span id="resultDistance" class="text-amber-400 font-bold"></span></p>
+          <p><span class="text-slate-400">費用說明：</span><span id="resultMethod" class="text-slate-200"></span></p>
         </div>
         <div class="bg-amber-500/5 border border-amber-500/20 py-4 px-6 rounded-xl text-center">
-          <p class="text-xs text-amber-500/80 uppercase font-semibold tracking-wider">試算總費用</p>
+          <p class="text-xs text-amber-500/80 uppercase font-semibold tracking-wider">預估總費用</p>
           <p id="resultPrice" class="text-4xl font-black text-amber-400 mt-1">NT$ --</p>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -248,11 +248,11 @@
           <input id="customerPhone" type="tel" placeholder="聯絡電話" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-amber-500/50" />
         </div>
         <div class="text-xs text-slate-400 bg-slate-950/30 p-3 rounded-lg border border-slate-800/50 leading-relaxed">
-          正式版本需改成：前端送出 quote request → Python 後端查 Google Routes → 後端計價 → 回傳 quote_id。
+          目前提供車資試算，填寫資料不會送出預約；如需安排接送，請洽客服確認。
         </div>
         <div class="flex flex-col sm:flex-row gap-3">
           <button id="backButton" type="button" class="flex-1 py-3 border border-slate-700 text-slate-300 font-semibold rounded-lg hover:bg-slate-800 transition-all text-sm">返回修改</button>
-          <button id="confirmButton" type="button" class="sm:w-2/3 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold rounded-lg transition-all text-sm">確認預約對接</button>
+          <button id="confirmButton" type="button" class="sm:w-2/3 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold rounded-lg transition-all text-sm">預約方式</button>
         </div>
       </div>
     </div>
@@ -460,7 +460,7 @@
       box.innerHTML = '';
 
       if (!results.length) {
-        box.innerHTML = '<div class="p-3 text-sm text-slate-400">找不到候選地點，請改用更完整的地標或地址。</div>';
+        box.innerHTML = '<div class="p-3 text-sm text-slate-400">找不到地點，請改用更完整的地標或地址。</div>';
         box.classList.remove('hidden');
         return;
       }
@@ -470,9 +470,8 @@
         button.type = 'button';
         button.className = 'w-full text-left p-3 hover:bg-slate-800 transition-colors';
         button.innerHTML = `
-          <p class="text-sm font-bold text-slate-100">${place.name || place.display_name || '候選地點 ' + (index + 1)}</p>
+          <p class="text-sm font-bold text-slate-100">${place.name || place.display_name || '地點 ' + (index + 1)}</p>
           <p class="text-xs text-slate-400 leading-relaxed mt-1">${place.display_name || ''}</p>
-          <p class="text-[11px] text-slate-500 mt-1">${place.type || 'place'} / ${place.class || 'unknown'}</p>
         `;
         button.addEventListener('click', () => selectAddressCandidate(type, place, 'manual'));
         box.appendChild(button);
@@ -494,8 +493,8 @@
       };
       input.value = selectedPlaces[type].label;
       status.innerText = mode === 'auto'
-        ? '已用輸入地址自動定位。若定位不對，請改用搜尋候選。'
-        : '已選擇候選地點。若修改文字，需重新搜尋選擇。';
+        ? '已找到地址，請確認是否為您的上下車地點；如需更改，請重新搜尋。'
+        : '已選好地點；修改地址後，請重新搜尋並選擇。';
       status.className = 'text-xs text-emerald-400';
       box.classList.add('hidden');
     }
@@ -514,19 +513,19 @@
       button.disabled = true;
       const originalText = button.innerText;
       button.innerText = '搜尋中';
-      status.innerText = '搜尋候選地點中...';
+      status.innerText = '搜尋地點中...';
       status.className = 'text-xs text-slate-400';
 
       try {
         const results = await fetchAddressCandidates(query);
         selectedPlaces[type] = null;
         renderAddressCandidates(type, results);
-        status.innerText = results.length ? '請從下方候選清單選擇正確地點。' : '找不到候選地點，請輸入更完整的地址。';
+        status.innerText = results.length ? '請從下方搜尋結果選擇正確地點。' : '找不到地點，請輸入更完整的地址。';
         status.className = results.length ? 'text-xs text-amber-400' : 'text-xs text-red-400';
       } catch (error) {
         selectedPlaces[type] = null;
         getResultsBox(type).classList.add('hidden');
-        status.innerText = error.message || '地址搜尋失敗，請稍後再試。';
+        status.innerText = '暫時無法搜尋地址，請稍後再試。';
         status.className = 'text-xs text-red-400';
       } finally {
         button.disabled = false;
@@ -588,12 +587,12 @@
         const res = await fetch(url);
         const data = await res.json();
         if (data.code === 'Ok' && data.routes && data.routes[0]) {
-          return { distanceKm: data.routes[0].distance / 1000, method: 'OSRM driving route POC' };
+          return { distanceKm: data.routes[0].distance / 1000, method: '依行車路線估算' };
         }
       } catch (error) {
         console.warn('OSRM failed, fallback to haversine estimate.', error);
       }
-      return { distanceKm: haversineKm(source, dest) * 1.35, method: 'Haversine fallback × 1.35，僅供 POC' };
+      return { distanceKm: haversineKm(source, dest) * 1.35, method: '路程為概略估算，請洽客服確認' };
     }
 
     function detectZone(text) {
@@ -619,7 +618,7 @@
       const addonPrice = ($('addonSign').checked ? 200 : 0) + ($('addonSeat').checked ? 300 : 0);
       const isAirport = activeTab === 'airport-send' || activeTab === 'airport-pickup';
       let basePrice = Math.max(Math.round(distanceKm * 20), 799);
-      let pricingMethod = '距離計價：max(round(distance_km × 20), 799)';
+      let pricingMethod = '依行程距離計費，基本車資 NT$ 799 起';
 
       if (isAirport) {
         const nonAirportText = activeTab === 'airport-send' ? sourceLabel : destLabel;
@@ -627,7 +626,7 @@
         const zone = detectZone(nonAirportText);
         if (zone && airportPricing[zone] && airportPricing[zone][airportCode]) {
           basePrice = airportPricing[zone][airportCode];
-          pricingMethod = `機場固定價目表：${zone} ⇄ ${airportCode}`;
+          pricingMethod = `機場接送基本車資：${zone} ⇄ ${airportCode}`;
         }
       }
 
@@ -645,7 +644,7 @@
       const button = $('quoteButton');
       const originalText = button.innerHTML;
       button.disabled = true;
-      button.innerHTML = '<span class="animate-spin rounded-full h-5 w-5 border-2 border-slate-950 border-t-transparent"></span><span>定位與試算中...</span>';
+      button.innerHTML = '<span class="animate-spin rounded-full h-5 w-5 border-2 border-slate-950 border-t-transparent"></span><span>正在試算車資...</span>';
 
       try {
         const source = await getPointFromForm('source');
@@ -662,7 +661,7 @@
         $('quoteModal').classList.remove('hidden');
         $('quoteModal').classList.add('flex');
       } catch (error) {
-        alert(error.message || '試算失敗，請確認地址或從候選清單選擇。');
+        alert(error instanceof TypeError ? '暫時無法查詢車資，請稍後再試。' : (error.message || '請確認上下車地點後，再試算車資。'));
       } finally {
         button.disabled = false;
         button.innerHTML = originalText;
@@ -700,7 +699,7 @@
       $('bookingForm').addEventListener('submit', handleQuote);
       $('closeModal').addEventListener('click', closeQuoteModal);
       $('backButton').addEventListener('click', closeQuoteModal);
-      $('confirmButton').addEventListener('click', () => alert('POC：正式版本應送出到 /api/orders，再由後端建立訂單。'));
+      $('confirmButton').addEventListener('click', () => alert('目前尚未開放線上送出預約，您的資料尚未送出。請洽客服確認車資、車輛與預約。'));
       lucide.createIcons();
     });
   </script>
