@@ -260,7 +260,7 @@
 
   <script>
     const airports = [
-      { code: 'TPE', text: '台灣桃園國際機場 (TPE)', lat: 25.0797, lon: 121.2342 },
+      { code: 'TPE', text: '台灣桃園國際機場 (TPE)', address: '33758桃園市大園區三石里航站南路9號' },
       { code: 'TSA', text: '台北松山機場 (TSA)', lat: 25.0697, lon: 121.5518 },
       { code: 'RMQ', text: '台中清泉崗機場 (RMQ)', lat: 24.2636, lon: 120.6206 },
       { code: 'KHH', text: '高雄小港國際機場 (KHH)', lat: 22.5768, lon: 120.3500 }
@@ -558,14 +558,42 @@
       return selectedPlaces[type];
     }
 
+    const airportPoints = new Map();
+
+    async function getAirportPoint(code) {
+      const airport = getAirportByCode(code);
+      if (!airport.address) return { ...airport, label: airport.text };
+      if (airportPoints.has(code)) return airportPoints.get(code);
+
+      // Resolve the configured street address, never the airport's center.
+      const response = await fetch('/api/places/search', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ query: airport.address })
+      });
+      const data = await response.json().catch(() => ({}));
+      const normalize = (value) => String(value || '').replace(/台/g, '臺')
+        .replace(/三石里/g, '').replace(/[\s，,]/g, '');
+      const matches = (data.candidates || []).filter((place) =>
+        /桃園市大園區航站南路9號(?![之0-9])/.test(normalize(place.address)) &&
+        Number.isFinite(place.lat) && Number.isFinite(place.lng)
+      );
+      if (!response.ok || matches.length !== 1) {
+        throw new Error('暫時無法確認桃園機場接送地址，請稍後再試或洽客服確認。');
+      }
+      const place = matches[0];
+      const point = { ...airport, lat: place.lat, lon: place.lng,
+        label: airport.text + '｜' + airport.address };
+      airportPoints.set(code, point);
+      return point;
+    }
+
     async function getPointFromForm(type) {
       if (type === 'source' && activeTab === 'airport-pickup') {
-        const airport = getAirportByCode($('airportSource').value);
-        return { ...airport, label: airport.text };
+        return await getAirportPoint($('airportSource').value);
       }
       if (type === 'dest' && activeTab === 'airport-send') {
-        const airport = getAirportByCode($('airportDest').value);
-        return { ...airport, label: airport.text };
+        return await getAirportPoint($('airportDest').value);
       }
       if (selectedPlaces[type]) return selectedPlaces[type];
       return await resolveTypedAddress(type);

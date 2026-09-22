@@ -2,9 +2,8 @@ const airports = [
   {
     code: 'TPE',
     text: '台灣桃園國際機場 (TPE)',
-    placeId: 'ChIJ1RXSYsCfQjQRCbG1qZC2o3A',
-    lat: 25.0804884,
-    lng: 121.2311579,
+    routingAddress: '33758桃園市大園區三石里航站南路9號',
+    address: '33758桃園市大園區三石里航站南路9號',
   },
   {
     code: 'TSA',
@@ -90,6 +89,7 @@ const validatePlace = (place) => (
 );
 
 const toRouteWaypoint = (place) => {
+  if (place.routingAddress) return { address: place.routingAddress };
   const placeId = String(place.place_id || place.placeId || '').trim();
   if (placeId) {
     return { placeId };

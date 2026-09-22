@@ -126,7 +126,7 @@
 
   <script>
     const airports = [
-      { code: 'TPE', text: '台灣桃園國際機場 (TPE)', lat: 25.0797, lng: 121.2342 },
+      { code: 'TPE', text: '台灣桃園國際機場 (TPE)', address: '33758桃園市大園區三石里航站南路9號' },
       { code: 'TSA', text: '台北松山機場 (TSA)', lat: 25.0697, lng: 121.5518 },
       { code: 'RMQ', text: '台中清泉崗機場 (RMQ)', lat: 24.2636, lng: 120.6206 },
       { code: 'KHH', text: '高雄小港國際機場 (KHH)', lat: 22.5768, lng: 120.3500 }
@@ -280,7 +280,7 @@
         });
 
         $('resultSource').innerText = quote.origin?.address || quote.origin?.name || selectedSourcePlace.address;
-        $('resultDest').innerText = quote.destination?.text || $('airportDest').selectedOptions[0].text;
+        $('resultDest').innerText = quote.destination?.address ? quote.destination.text + '｜' + quote.destination.address : (quote.destination?.text || $('airportDest').selectedOptions[0].text);
         $('resultDistance').innerText = `${Number(quote.distanceKm).toFixed(1)} 公里`;
         $('resultDuration').innerText = formatDuration(quote.duration);
         $('resultMethod').innerText = '依接送路線、所選車型及加購服務計算，實際費用請洽客服確認。';
