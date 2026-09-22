@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <title>車旅所 Google 版 | 租賃車接送預約平台</title>
+  <title>車旅所 | 機場接送・商務接送</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
@@ -16,9 +16,9 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
       <a href="./index.html" class="flex items-center gap-2">
         <span class="text-xl sm:text-2xl font-bold tracking-widest text-white">車旅所<span class="text-amber-500">.</span></span>
-        <span class="hidden sm:inline-block px-2.5 py-0.5 text-xs font-semibold bg-blue-500/10 text-blue-300 border border-blue-500/20 rounded-full">Google Places 版</span>
+        <span class="hidden sm:inline-block px-2.5 py-0.5 text-xs font-semibold bg-blue-500/10 text-blue-300 border border-blue-500/20 rounded-full">機場接送</span>
       </a>
-      <a href="./index.html" class="text-sm text-slate-300 hover:text-amber-400">回 OSM 版</a>
+      <a href="./index.html" class="text-sm text-slate-300 hover:text-amber-400">返回首頁</a>
     </div>
   </header>
 
@@ -28,16 +28,16 @@
       <div class="relative max-w-5xl w-full flex flex-col items-center gap-6 sm:gap-8">
         <div class="text-center">
           <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-2 sm:mb-4 px-2">
-            租賃車接送試算 <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-amber-500">Google 版</span>
+            機場接送 尊榮安排 <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-amber-500">車旅所</span>
           </h1>
           <p class="text-sm sm:text-base text-slate-400 max-w-3xl mx-auto px-4 leading-relaxed">
-            輸入出發地並選擇候選結果，系統會用後端路線服務試算車資。
+            輸入上車地點、選擇機場與車型，查看您的預估車資。
           </p>
         </div>
 
         <div id="serverPanel" class="w-full bg-slate-800/80 border border-blue-500/30 rounded-2xl p-5 sm:p-6 shadow-2xl">
-          <label class="block text-sm sm:text-base font-bold text-slate-300 mb-2">後端連線</label>
-          <p id="serverStatus" class="text-sm text-emerald-300">Netlify Functions 已接管路線與報價。</p>
+          <label class="block text-sm sm:text-base font-bold text-slate-300 mb-2">行程小提醒</label>
+          <p id="serverStatus" class="text-sm text-emerald-300">請先搜尋並選好上車地點，再查看預估車資。</p>
         </div>
 
         <div class="w-full bg-slate-800/80 border border-slate-700/50 rounded-2xl shadow-2xl backdrop-blur-md overflow-visible">
@@ -48,9 +48,9 @@
                   <label class="block text-sm sm:text-base font-bold text-slate-300 mb-1.5 sm:mb-2">出發地址</label>
                   <div class="flex flex-col sm:flex-row gap-2">
                     <input type="text" id="txtSource" placeholder="例：台北市內湖區麗山街63號、麗山國中" autocomplete="off" class="flex-1 min-w-0 bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-3 text-base text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all" />
-                    <button id="searchSourceButton" type="button" class="px-5 py-3 bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-lg text-sm font-bold text-slate-100 transition-all">搜尋候選</button>
+                    <button id="searchSourceButton" type="button" class="px-5 py-3 bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-lg text-sm font-bold text-slate-100 transition-all">搜尋地點</button>
                   </div>
-                  <p id="sourceStatus" class="text-xs text-slate-500 mt-2">請先搜尋並選擇候選地點。</p>
+                  <p id="sourceStatus" class="text-xs text-slate-500 mt-2">請先搜尋並選擇地點。</p>
                   <div id="sourceResults" class="hidden mt-3 bg-slate-950 border border-slate-700 rounded-xl overflow-hidden divide-y divide-slate-800 max-h-64 overflow-y-auto"></div>
                 </div>
                 <div>
@@ -69,7 +69,7 @@
                   </div>
                 </div>
                 <div class="md:col-span-5">
-                  <label class="block text-sm sm:text-base font-bold text-slate-300 mb-1.5 sm:mb-2">預定車型</label>
+                  <label class="block text-sm sm:text-base font-bold text-slate-300 mb-1.5 sm:mb-2">選擇車型</label>
                   <select id="vehicleType" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-3 text-base text-slate-100 focus:outline-none focus:ring-2 focus:ring-amber-500/50">
                     <option value="comfort_4">舒適四人座</option>
                     <option value="luxury_import">尊榮進口車 +500</option>
@@ -92,7 +92,7 @@
 
               <button id="quoteButton" type="submit" class="w-full py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-lg rounded-xl shadow-lg shadow-amber-900/20 transition-all flex items-center justify-center gap-2">
                 <i data-lucide="calculator" class="w-5 h-5"></i>
-                <span>Google 試算車資</span>
+                <span>試算車資</span>
               </button>
             </form>
           </div>
@@ -106,17 +106,17 @@
       <div class="p-5 sm:p-6 space-y-5">
         <div class="text-center relative">
           <button id="closeModal" type="button" class="absolute right-0 top-0 text-slate-500 hover:text-slate-200"><i data-lucide="x" class="w-5 h-5"></i></button>
-          <h3 class="text-xl sm:text-2xl font-extrabold text-white">Google 試算結果</h3>
+          <h3 class="text-xl sm:text-2xl font-extrabold text-white">車資試算結果</h3>
         </div>
         <div class="bg-slate-950/60 border border-slate-800 p-4 rounded-xl space-y-2.5 text-sm">
           <p><span class="text-slate-400">起點：</span><span id="resultSource" class="text-white font-semibold"></span></p>
           <p><span class="text-slate-400">目的地：</span><span id="resultDest" class="text-white font-semibold"></span></p>
-          <p><span class="text-slate-400">距離：</span><span id="resultDistance" class="text-amber-400 font-bold"></span></p>
-          <p><span class="text-slate-400">時間：</span><span id="resultDuration" class="text-slate-200"></span></p>
-          <p><span class="text-slate-400">計價方式：</span><span id="resultMethod" class="text-slate-200"></span></p>
+          <p><span class="text-slate-400">預估路程：</span><span id="resultDistance" class="text-amber-400 font-bold"></span></p>
+          <p><span class="text-slate-400">預估車程：</span><span id="resultDuration" class="text-slate-200"></span></p>
+          <p><span class="text-slate-400">費用說明：</span><span id="resultMethod" class="text-slate-200"></span></p>
         </div>
         <div class="bg-amber-500/5 border border-amber-500/20 py-4 px-6 rounded-xl text-center">
-          <p class="text-xs text-amber-500/80 uppercase font-semibold tracking-wider">試算總費用</p>
+          <p class="text-xs text-amber-500/80 uppercase font-semibold tracking-wider">預估總費用</p>
           <p id="resultPrice" class="text-4xl font-black text-amber-400 mt-1">NT$ --</p>
         </div>
         <button id="backButton" type="button" class="w-full py-3 border border-slate-700 text-slate-300 font-semibold rounded-lg hover:bg-slate-800 transition-all text-sm">返回修改</button>
@@ -182,7 +182,7 @@
 
       if (!candidates.length) {
         results.classList.add('hidden');
-        setSourceStatus('找不到候選地點，請輸入更完整地址。', 'text-xs text-red-400 mt-2');
+        setSourceStatus('找不到地點，請輸入更完整地址。', 'text-xs text-red-400 mt-2');
         return;
       }
 
@@ -205,7 +205,7 @@
       }
 
       results.classList.remove('hidden');
-      setSourceStatus('請從候選地點中選擇一筆。', 'text-xs text-amber-400 mt-2');
+      setSourceStatus('請從地點中選擇一筆。', 'text-xs text-amber-400 mt-2');
     }
 
     function selectSourceCandidate(candidate) {
@@ -213,7 +213,7 @@
       $('txtSource').value = candidate.address || candidate.name;
       $('sourceResults').classList.add('hidden');
       $('sourceResults').innerHTML = '';
-      setSourceStatus('已選擇候選地點，可以試算。', 'text-xs text-emerald-400 mt-2');
+      setSourceStatus('已選擇地點，可以試算。', 'text-xs text-emerald-400 mt-2');
       setQuoteEnabled(true);
     }
 
@@ -230,16 +230,16 @@
       const originalText = button.innerText;
       button.disabled = true;
       button.innerText = '搜尋中...';
-      setSourceStatus('正在搜尋候選地點...', 'text-xs text-slate-400 mt-2');
+      setSourceStatus('正在搜尋地點...', 'text-xs text-slate-400 mt-2');
 
       try {
         const data = await apiPost('/api/places/search', { query });
         renderCandidates(data.candidates || []);
-        setServerStatus('後端搜尋完成。', 'text-sm text-emerald-300');
+        setServerStatus('地點搜尋完成，請確認上車地址。', 'text-sm text-emerald-300');
       } catch (error) {
         $('sourceResults').classList.add('hidden');
-        setSourceStatus(error.message || '搜尋候選地點失敗。', 'text-xs text-red-400 mt-2');
-        setServerStatus('後端搜尋失敗。', 'text-sm text-red-300');
+        setSourceStatus('暫時無法搜尋地點，請稍後再試。', 'text-xs text-red-400 mt-2');
+        setServerStatus('暫時無法搜尋地點，請稍後再試。', 'text-sm text-red-300');
       } finally {
         button.disabled = false;
         button.innerText = originalText;
@@ -259,14 +259,14 @@
     async function handleQuote(event) {
       event.preventDefault();
       if (!selectedSourcePlace) {
-        setSourceStatus('請先搜尋並選擇候選地點。', 'text-xs text-red-400 mt-2');
+        setSourceStatus('請先搜尋並選擇地點。', 'text-xs text-red-400 mt-2');
         return;
       }
 
       const button = $('quoteButton');
       const originalText = button.innerHTML;
       button.disabled = true;
-      button.innerHTML = '<span class="animate-spin rounded-full h-5 w-5 border-2 border-slate-950 border-t-transparent"></span><span>後端試算中...</span>';
+      button.innerHTML = '<span class="animate-spin rounded-full h-5 w-5 border-2 border-slate-950 border-t-transparent"></span><span>正在試算車資...</span>';
 
       try {
         const quote = await apiPost('/api/quote', {
@@ -283,14 +283,14 @@
         $('resultDest').innerText = quote.destination?.text || $('airportDest').selectedOptions[0].text;
         $('resultDistance').innerText = `${Number(quote.distanceKm).toFixed(1)} 公里`;
         $('resultDuration').innerText = formatDuration(quote.duration);
-        $('resultMethod').innerText = `${quote.pricingMethod} / ${quote.routeMethod}`;
+        $('resultMethod').innerText = '依接送路線、所選車型及加購服務計算，實際費用請洽客服確認。';
         $('resultPrice').innerText = `NT$ ${Number(quote.totalPrice).toLocaleString()}`;
         $('quoteModal').classList.remove('hidden');
         $('quoteModal').classList.add('flex');
-        setServerStatus(`報價 ${quote.quoteId} 已建立。`, 'text-sm text-emerald-300');
+        setServerStatus('車資試算完成，實際費用與預約請洽客服確認。', 'text-sm text-emerald-300');
       } catch (error) {
-        setSourceStatus(error.message || '後端試算失敗，需人工確認。', 'text-xs text-red-400 mt-2');
-        setServerStatus('後端試算失敗。', 'text-sm text-red-300');
+        setSourceStatus('暫時無法試算車資，請稍後再試或洽客服確認。', 'text-xs text-red-400 mt-2');
+        setServerStatus('暫時無法提供車資，請洽客服確認。', 'text-sm text-red-300');
       } finally {
         button.disabled = false;
         button.innerHTML = originalText;
@@ -317,14 +317,14 @@
         sourceComposing = false;
         selectedSourcePlace = null;
         setQuoteEnabled(false);
-        setSourceStatus('地址已修改，請重新搜尋候選地點。', 'text-xs text-amber-400 mt-2');
+        setSourceStatus('地址已修改，請重新搜尋地點。', 'text-xs text-amber-400 mt-2');
       });
       $('txtSource').addEventListener('input', () => {
         if (sourceComposing) return;
         selectedSourcePlace = null;
         setQuoteEnabled(false);
         $('sourceResults').classList.add('hidden');
-        setSourceStatus('地址已修改，請重新搜尋候選地點。', 'text-xs text-amber-400 mt-2');
+        setSourceStatus('地址已修改，請重新搜尋地點。', 'text-xs text-amber-400 mt-2');
       });
       $('txtSource').addEventListener('keydown', (event) => {
         if (event.key === 'Enter' && !sourceComposing) {
