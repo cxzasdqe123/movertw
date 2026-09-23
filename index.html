@@ -238,6 +238,8 @@
           <p><span class="text-slate-400">目的地：</span><span id="resultDest" class="text-white font-semibold"></span></p>
           <p><span class="text-slate-400">預估路程：</span><span id="resultDistance" class="text-amber-400 font-bold"></span></p>
           <p><span class="text-slate-400">費用說明：</span><span id="resultMethod" class="text-slate-200"></span></p>
+          <p class="text-xs text-slate-400">依目前路況估算，非預約時間的路況；實際路線可能隨路況調整。</p>
+          <a id="resultMaps" target="_blank" rel="noopener noreferrer" class="inline-block text-amber-400 underline">在 Google Maps 查看汽車路線</a>
         </div>
         <div class="bg-amber-500/5 border border-amber-500/20 py-4 px-6 rounded-xl text-center">
           <p class="text-xs text-amber-500/80 uppercase font-semibold tracking-wider">預估總費用</p>
@@ -266,19 +268,7 @@
       { code: 'KHH', text: '高雄小港國際機場 (KHH)', lat: 22.5768, lon: 120.3500 }
     ];
 
-    const airportPricing = {
-      '台北市': { TPE: 1100, TSA: 850 },
-      '臺北市': { TPE: 1100, TSA: 850 },
-      '文山區': { TPE: 1300, TSA: 900 },
-      '汐止區': { TPE: 1400, TSA: 1000 },
-      '新北市': { TPE: 1300, TSA: 1000 },
-      '桃園市': { TPE: 799 },
-      '新竹市': { TPE: 1800 },
-      '新竹縣': { TPE: 1900 }
-    };
-
     let activeTab = 'airport-send';
-    let lastDistanceKm = 0;
     const selectedPlaces = { source: null, dest: null };
 
     const $ = (id) => document.getElementById(id);
@@ -462,113 +452,23 @@
       throw new Error('請從搜尋結果選擇正確的上下車地點後，再試算車資。');
     }
 
-    const airportPoints = new Map();
-
-    async function getAirportPoint(code) {
-      const airport = getAirportByCode(code);
-      if (!airport.address) return { ...airport, label: airport.text };
-      if (airportPoints.has(code)) return airportPoints.get(code);
-
-      // Resolve the configured street address, never the airport's center.
-      const response = await fetch('/api/places/search', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ query: airport.address })
-      });
-      const data = await response.json().catch(() => ({}));
-      const normalize = (value) => String(value || '').replace(/台/g, '臺')
-        .replace(/三石里/g, '').replace(/[\s，,]/g, '');
-      const matches = (data.candidates || []).filter((place) =>
-        /桃園市大園區航站南路9號(?![之0-9])/.test(normalize(place.address)) &&
-        Number.isFinite(place.lat) && Number.isFinite(place.lng)
-      );
-      if (!response.ok || matches.length !== 1) {
-        throw new Error('暫時無法確認桃園機場接送地址，請稍後再試或洽客服確認。');
-      }
-      const place = matches[0];
-      const point = { ...airport, lat: place.lat, lon: place.lng,
-        label: airport.text + '｜' + airport.address };
-      airportPoints.set(code, point);
-      return point;
-    }
-
-    async function getPointFromForm(type) {
-      if (type === 'source' && activeTab === 'airport-pickup') {
-        return await getAirportPoint($('airportSource').value);
-      }
-      if (type === 'dest' && activeTab === 'airport-send') {
-        return await getAirportPoint($('airportDest').value);
-      }
-      if (selectedPlaces[type]) return selectedPlaces[type];
-      return await resolveTypedAddress(type);
-    }
-
-    function haversineKm(a, b) {
-      const R = 6371;
-      const dLat = (b.lat - a.lat) * Math.PI / 180;
-      const dLon = (b.lon - a.lon) * Math.PI / 180;
-      const lat1 = a.lat * Math.PI / 180;
-      const lat2 = b.lat * Math.PI / 180;
-      const x = Math.sin(dLat / 2) ** 2 + Math.sin(dLon / 2) ** 2 * Math.cos(lat1) * Math.cos(lat2);
-      return 2 * R * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
-    }
-
-    async function calculateDrivingDistanceKm(source, dest) {
-      const url = `https://router.project-osrm.org/route/v1/driving/${source.lon},${source.lat};${dest.lon},${dest.lat}?overview=false`;
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        if (data.code === 'Ok' && data.routes && data.routes[0]) {
-          return { distanceKm: data.routes[0].distance / 1000, method: '依行車路線估算' };
-        }
-      } catch (error) {
-        console.warn('OSRM failed, fallback to haversine estimate.', error);
-      }
-      return { distanceKm: haversineKm(source, dest) * 1.35, method: '路程為概略估算，請洽客服確認' };
-    }
-
-    function detectZone(text) {
-      if (text.includes('文山')) return '文山區';
-      if (text.includes('汐止')) return '汐止區';
-      if (text.includes('台北')) return '台北市';
-      if (text.includes('臺北')) return '臺北市';
-      if (text.includes('新北')) return '新北市';
-      if (text.includes('桃園')) return '桃園市';
-      if (text.includes('新竹市')) return '新竹市';
-      if (text.includes('新竹縣')) return '新竹縣';
-      return null;
-    }
-
-    function calculatePrice(sourceLabel, destLabel, distanceKm) {
-      const vehicleSurcharge = {
-        comfort_4: 0,
-        luxury_import: 500,
-        business_7: 300,
-        premium_7: 2000
-      }[$('vehicleType').value] ?? 0;
-
-      const addonPrice = ($('addonSign').checked ? 200 : 0) + ($('addonSeat').checked ? 300 : 0);
-      const isAirport = activeTab === 'airport-send' || activeTab === 'airport-pickup';
-      let basePrice = Math.max(Math.round(distanceKm * 20), 799);
-      let pricingMethod = '依行程距離計費，基本車資 NT$ 799 起';
-
-      if (isAirport) {
-        const nonAirportText = activeTab === 'airport-send' ? sourceLabel : destLabel;
-        const airportCode = activeTab === 'airport-send' ? $('airportDest').value : $('airportSource').value;
-        const zone = detectZone(nonAirportText);
-        if (zone && airportPricing[zone] && airportPricing[zone][airportCode]) {
-          basePrice = airportPricing[zone][airportCode];
-          pricingMethod = `機場接送基本車資：${zone} ⇄ ${airportCode}`;
-        }
-      }
-
-      return {
-        basePrice,
-        vehicleSurcharge,
-        addonPrice: isAirport ? addonPrice : 0,
-        totalPrice: basePrice + vehicleSurcharge + (isAirport ? addonPrice : 0),
-        pricingMethod
+    function buildQuotePayload() {
+      const payload = {
+        serviceType: activeTab,
+        vehicleType: $('vehicleType').value,
+        addons: { sign: $('addonSign').checked, childSeat: $('addonSeat').checked }
       };
+      if (activeTab === 'airport-pickup') payload.sourceAirportCode = $('airportSource').value;
+      else {
+        if (!selectedPlaces.source) throw new Error('請先搜尋並選擇出發地點。');
+        payload.origin = selectedPlaces.source;
+      }
+      if (activeTab === 'airport-send') payload.destinationAirportCode = $('airportDest').value;
+      else {
+        if (!selectedPlaces.dest) throw new Error('請先搜尋並選擇抵達地點。');
+        payload.destination = selectedPlaces.dest;
+      }
+      return payload;
     }
 
     async function handleQuote(event) {
@@ -579,16 +479,19 @@
       button.innerHTML = '<span class="animate-spin rounded-full h-5 w-5 border-2 border-slate-950 border-t-transparent"></span><span>正在試算車資...</span>';
 
       try {
-        const source = await getPointFromForm('source');
-        const dest = await getPointFromForm('dest');
-        const route = await calculateDrivingDistanceKm(source, dest);
-        lastDistanceKm = route.distanceKm;
-        const quote = calculatePrice(source.label, dest.label, route.distanceKm);
-
-        $('resultSource').innerText = source.label;
-        $('resultDest').innerText = dest.label;
-        $('resultDistance').innerText = `${route.distanceKm.toFixed(1)} 公里`;
-        $('resultMethod').innerText = quote.pricingMethod + ' / ' + route.method;
+        const requestBody = JSON.stringify(buildQuotePayload());
+        const response = await fetch('/api/quote', {
+          method: 'POST', headers: { 'content-type': 'application/json' }, body: requestBody
+        });
+        const quote = await response.json();
+        if (!response.ok) throw new Error(quote.error || '暫時無法查詢車資，請稍後再試。');
+        if (JSON.stringify(buildQuotePayload()) !== requestBody) throw new Error('行程已變更，請重新試算車資。');
+        const label = place => place.text ? place.text + (place.address ? '｜' + place.address : '') : place.address || place.name;
+        $('resultSource').innerText = label(quote.origin);
+        $('resultDest').innerText = label(quote.destination);
+        $('resultDistance').innerText = `${(quote.distanceMeters / 1000).toFixed(1)} 公里`;
+        $('resultMethod').innerText = quote.pricingMethod;
+        $('resultMaps').href = quote.mapsUrl;
         $('resultPrice').innerText = `NT$ ${quote.totalPrice.toLocaleString()}`;
         $('quoteModal').classList.remove('hidden');
         $('quoteModal').classList.add('flex');
@@ -644,3 +547,4 @@
   </script>
 </body>
 </html>
+

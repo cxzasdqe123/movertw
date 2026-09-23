@@ -67,13 +67,6 @@ const detectZone = (text) => {
   return null;
 };
 
-const googleStatusMessage = {
-  REQUEST_DENIED: 'Google 拒絕路線試算，請確認後端 key、Routes API、billing 與 API 限制。',
-  RESOURCE_EXHAUSTED: 'Google 路線試算超過配額，請稍後再試或調整配額。',
-  INVALID_ARGUMENT: 'Google 路線試算請求格式不完整。',
-  PERMISSION_DENIED: 'Google 路線試算權限不足，請確認 Routes API 已啟用。',
-};
-
 const quoteId = () => {
   const now = new Date();
   const date = now.toISOString().slice(0, 10).replaceAll('-', '');
@@ -113,6 +106,7 @@ async function computeDrivingRoute(apiKey, origin, destination) {
       'x-goog-api-key': apiKey,
       'x-goog-fieldmask': 'routes.distanceMeters,routes.duration',
     },
+    signal: AbortSignal.timeout(20000),
     body: JSON.stringify({
       origin: toRouteWaypoint(origin),
       destination: toRouteWaypoint(destination),
@@ -125,12 +119,11 @@ async function computeDrivingRoute(apiKey, origin, destination) {
 
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    const status = data.error?.status;
-    throw new Error(googleStatusMessage[status] || data.error?.message || `Google 路線試算失敗：${response.status}`);
+    throw new Error('暫時無法取得行車路線，請稍後再試或洽客服確認車資。');
   }
 
   const route = data.routes?.[0];
-  if (!route?.distanceMeters) {
+  if (!Number.isFinite(route?.distanceMeters) || route.distanceMeters < 0) {
     throw new Error('Google 無法取得可靠開車距離，需人工確認。');
   }
 
@@ -143,7 +136,7 @@ async function computeDrivingRoute(apiKey, origin, destination) {
 function calculatePrice(originLabel, airportCode, distanceKm, vehicleType, addons = {}) {
   const zone = detectZone(originLabel);
   let basePrice = Math.max(Math.round(distanceKm * 20), 799);
-  let pricingMethod = '距離計價：max(round(distance_km x 20), 799)';
+  let pricingMethod = '依行程距離計費，基本車資 NT$ 799 起';
 
   if (zone && airportPricing[zone]?.[airportCode]) {
     basePrice = airportPricing[zone][airportCode];
@@ -169,48 +162,62 @@ export async function handler(event) {
 
   const apiKey = process.env.GOOGLE_MAPS_API_KEY;
   if (!apiKey) {
-    return json(500, { error: 'Server Google Maps key is not configured.' });
+    return json(500, { error: '暫時無法提供查詢，請洽客服協助。' });
   }
 
   let payload;
   try {
-    payload = JSON.parse(event.body || '{}');
+    payload = JSON.parse(event.body || '{}') || {};
   } catch {
     return json(400, { error: 'Invalid JSON body.' });
   }
 
-  const origin = payload.origin;
-  const destinationAirportCode = String(payload.destinationAirportCode || 'TPE');
-  const destinationAirport = airports.find((airport) => airport.code === destinationAirportCode);
-
-  if (!validatePlace(origin)) {
-    return json(400, { error: '請先選擇確認後的出發地候選結果。' });
+  const serviceType = payload.serviceType || 'airport-send';
+  if (!['airport-send', 'airport-pickup', 'general-travel', 'emergency'].includes(serviceType)) {
+    return json(400, { error: '請選擇接送類型。' });
   }
-  if (!destinationAirport) {
-    return json(400, { error: '不支援的機場。' });
+  const isAirport = serviceType.startsWith('airport-');
+  const pickup = serviceType === 'airport-pickup';
+  const airportCode = pickup ? payload.sourceAirportCode : (payload.destinationAirportCode || 'TPE');
+  const airport = isAirport ? airports.find(item => item.code === airportCode) : null;
+  if (isAirport && !airport) return json(400, { error: '請選擇接送機場。' });
+  // Only server-owned airports may override routing with a configured street address.
+  const selected = place => validatePlace(place) ? {
+    place_id: String(place.place_id || '').trim(),
+    name: String(place.name || ''),
+    address: String(place.address || place.label || place.name),
+    lat: Number(place.lat), lng: Number(place.lng),
+  } : null;
+  const origin = pickup ? airport : selected(payload.origin);
+  const destination = serviceType === 'airport-send' ? airport : selected(payload.destination);
+  if (!origin || !destination) {
+    return json(400, { error: '請先從搜尋結果選擇正確的上下車地點。' });
   }
 
   try {
-    const route = await computeDrivingRoute(apiKey, origin, destinationAirport);
+    const route = await computeDrivingRoute(apiKey, origin, destination);
     const distanceKm = route.distanceMeters / 1000;
-    const originLabel = origin.address || origin.name || origin.label;
-    const price = calculatePrice(originLabel, destinationAirport.code, distanceKm, payload.vehicleType, payload.addons);
-
+    const nonAirport = pickup ? destination : origin;
+    const price = calculatePrice(nonAirport.address || nonAirport.name, airport?.code,
+      distanceKm, payload.vehicleType, isAirport ? (payload.addons || {}) : {});
+    const maps = new URL('https://www.google.com/maps/dir/');
+    maps.searchParams.set('api', '1');
+    maps.searchParams.set('travelmode', 'driving');
+    for (const [key, place] of [['origin', origin], ['destination', destination]]) {
+      const id = place.place_id || place.placeId;
+      maps.searchParams.set(key, place.routingAddress || (id ? (place.address || place.text || place.name) : `${place.lat},${place.lng}`));
+      if (id && !place.routingAddress) maps.searchParams.set(`${key}_place_id`, id);
+    }
     return json(200, {
-      quoteId: quoteId(),
-      origin: {
-        place_id: origin.place_id || null,
-        name: origin.name || originLabel,
-        address: originLabel,
-      },
-      destination: destinationAirport,
+      quoteId: quoteId(), serviceType, origin, destination,
       distanceKm: Number(distanceKm.toFixed(1)),
       distanceMeters: route.distanceMeters,
       duration: route.duration,
       ...price,
-      routeMethod: 'Google Routes API driving route',
+      mapsUrl: maps.toString(),
+      routeMethod: '依目前路況規劃汽車路線',
     });
   } catch (error) {
-    return json(502, { error: error.message || 'Google 路線試算失敗。' });
+    return json(502, { error: '暫時無法取得行車路線，請稍後再試或洽客服確認車資。' });
   }
 }

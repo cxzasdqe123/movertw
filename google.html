@@ -114,6 +114,8 @@
           <p><span class="text-slate-400">預估路程：</span><span id="resultDistance" class="text-amber-400 font-bold"></span></p>
           <p><span class="text-slate-400">預估車程：</span><span id="resultDuration" class="text-slate-200"></span></p>
           <p><span class="text-slate-400">費用說明：</span><span id="resultMethod" class="text-slate-200"></span></p>
+          <p class="text-xs text-slate-400">依目前路況估算，非預約時間的路況；實際路線可能隨路況調整。</p>
+          <a id="resultMaps" target="_blank" rel="noopener noreferrer" class="inline-block text-amber-400 underline">在 Google Maps 查看汽車路線</a>
         </div>
         <div class="bg-amber-500/5 border border-amber-500/20 py-4 px-6 rounded-xl text-center">
           <p class="text-xs text-amber-500/80 uppercase font-semibold tracking-wider">預估總費用</p>
@@ -282,6 +284,7 @@
         $('resultSource').innerText = quote.origin?.address || quote.origin?.name || selectedSourcePlace.address;
         $('resultDest').innerText = quote.destination?.address ? quote.destination.text + '｜' + quote.destination.address : (quote.destination?.text || $('airportDest').selectedOptions[0].text);
         $('resultDistance').innerText = `${Number(quote.distanceKm).toFixed(1)} 公里`;
+        $('resultMaps').href = quote.mapsUrl;
         $('resultDuration').innerText = formatDuration(quote.duration);
         $('resultMethod').innerText = '依接送路線、所選車型及加購服務計算，實際費用請洽客服確認。';
         $('resultPrice').innerText = `NT$ ${Number(quote.totalPrice).toLocaleString()}`;
@@ -337,3 +340,4 @@
   </script>
 </body>
 </html>
+

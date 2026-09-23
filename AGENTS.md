@@ -69,13 +69,16 @@ scripts/dev-server.mjs
   - `lng`
 - 前端送 `/api/quote` 時必須送已選候選地點，不要只送純文字地址。
 
-目前 `places-search.mjs` 使用舊版 Google Places Text Search endpoint：
+目前 `places-search.mjs` 使用 Places API (New) Text Search：
+`https://places.googleapis.com/v1/places:searchText`。
+Google Cloud 與 key restrictions 必須允許 Places API (New) 和 Routes API。
+搜尋僅請求 ID、名稱、地址及座標，不請求評價等 Enterprise 欄位。
 
-```text
-https://maps.googleapis.com/maps/api/place/textsearch/json
-```
-
-這是因為 Google Cloud Console 裡的 `Places API` 限制已可用。若改成 Places API New endpoint，必須同步確認 Google Cloud API 與 key restrictions。
+`index.html` 的送機、接機、商務與臨時接送均呼叫 `/api/quote`。
+桃園機場起訖點固定使用 `33758桃園市大園區三石里航站南路9號`，由後端送地址給 Routes，不能改用機場中心座標。
+接機固定價依非機場端的行政區計算；商務與臨時接送不套機場固定價或加購。
+Google Maps 比較連結保留相同 Place ID／機場地址，使用汽車、立即出發。
+路況、出發時間和使用者路線偏好仍可能使 Google Maps 顯示不同路線。
 
 ## 距離與報價規則
 
@@ -166,7 +169,7 @@ Google Cloud key 設定：
 ```text
 Application restrictions: None
 API restrictions:
-  - Places API
+  - Places API (New)
   - Routes API
 Billing: enabled
 ```
@@ -208,3 +211,4 @@ curl -L -X POST https://flourishing-narwhal-f3b2fe.netlify.app/api/places/search
 - 不要在 Google Routes 失敗時用直線距離充數。
 - 不要加入大型框架或複雜後端，除非需求真的擴大。
 - 不要刪掉現有機場接送、車型加價、加購邏輯，除非需求明確要求。
+
