@@ -2,7 +2,8 @@ const airports = [
   {
     code: 'TPE',
     text: '台灣桃園國際機場 (TPE)',
-    routingAddress: '33758桃園市大園區三石里航站南路9號',
+    // Confirmed Google airport landmark at this address; never geocode to parking lot 3.
+    placeId: 'ChIJ1RXSYsCfQjQRCbG1qZC2o3A',
     address: '33758桃園市大園區三石里航站南路9號',
   },
   {

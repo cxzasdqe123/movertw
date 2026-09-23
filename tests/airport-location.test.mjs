@@ -17,17 +17,18 @@ function mock(t, data = { routes: [{ distanceMeters: 42123, duration: '2700s' }]
   return requests;
 }
 const quote = payload => handler({ httpMethod: 'POST', body: JSON.stringify(payload) });
-test('pickup routes FROM canonical airport address and prices destination district', async t => {
+test('pickup routes FROM confirmed airport landmark and prices destination district', async t => {
   const requests = mock(t);
   const result = await quote({ serviceType: 'airport-pickup', sourceAirportCode: 'TPE', destination: place,
     vehicleType: 'business_7', addons: { sign: true, childSeat: true } });
   assert.equal(result.statusCode, 200);
-  assert.deepEqual(requests[0].origin, { address });
+  assert.deepEqual(requests[0].origin, { placeId: 'ChIJ1RXSYsCfQjQRCbG1qZC2o3A' });
   assert.deepEqual(requests[0].destination, { placeId: 'cafe' });
   const data = JSON.parse(result.body);
   assert.equal(data.totalPrice, 1900);
   const url = new URL(data.mapsUrl);
   assert.equal(url.searchParams.get('origin'), address);
+  assert.equal(url.searchParams.get('origin_place_id'), 'ChIJ1RXSYsCfQjQRCbG1qZC2o3A');
   assert.equal(url.searchParams.get('destination_place_id'), 'cafe');
   assert.equal(url.searchParams.get('travelmode'), 'driving');
 });

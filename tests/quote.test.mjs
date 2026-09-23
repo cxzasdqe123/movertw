@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 
 import { handler } from '../netlify/functions/quote.mjs';
 
-test('quote routes to the configured Taoyuan street address with traffic-aware routing', async (t) => {
+test('quote routes to the confirmed Taoyuan airport landmark with traffic-aware routing', async (t) => {
   const originalFetch = globalThis.fetch;
   const originalApiKey = process.env.GOOGLE_MAPS_API_KEY;
   let googleRequest;
@@ -49,7 +49,7 @@ test('quote routes to the configured Taoyuan street address with traffic-aware r
 
   const routeRequest = JSON.parse(googleRequest.options.body);
   assert.deepEqual(routeRequest.origin, { placeId: 'test-origin-place-id' });
-  assert.deepEqual(routeRequest.destination, { address: '33758桃園市大園區三石里航站南路9號' });
+  assert.deepEqual(routeRequest.destination, { placeId: 'ChIJ1RXSYsCfQjQRCbG1qZC2o3A' });
   assert.equal(routeRequest.routingPreference, 'TRAFFIC_AWARE_OPTIMAL');
 
   const quote = JSON.parse(result.body);
@@ -106,3 +106,4 @@ test('quote keeps coordinate waypoints as a fallback when place_id is unavailabl
   });
   assert.deepEqual(routeRequest.destination, { placeId: 'ChIJWSYUpPGrQjQROop1ttwNGJM' });
 });
+
