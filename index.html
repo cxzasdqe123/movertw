@@ -199,6 +199,83 @@
       *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
     }
 
+
+    /* Layout refinement: keep the service choice and full calculator visible together. */
+    .hero-copy { grid-column: 1; grid-row: 1 / span 2; align-self: center; max-width: 34rem; }
+    .hero-copy h1 { margin: .45rem 0 1rem !important; padding: 0 !important; font-size: clamp(2.35rem, 4vw, 3.8rem) !important; }
+    .hero-copy > p:not(.hero-eyebrow) { max-width: 29rem; margin: 0 !important; padding: 0 !important; font-size: 1.05rem !important; color: #b7beb5 !important; }
+    .hero-eyebrow, .section-kicker { display: block; margin-bottom: .75rem; color: var(--champagne-bright); font-size: .72rem; font-weight: 700; letter-spacing: .2em; }
+    .hero-actions { display: flex; flex-direction: column; align-items: flex-start; gap: .9rem; margin-top: 1.8rem; }
+    .hero-cta { display: inline-flex; align-items: center; gap: .6rem; padding: .9rem 1.15rem; border: 1px solid rgba(200,173,117,.56); border-radius: 999px; color: var(--champagne-bright); font-size: .9rem; font-weight: 700; text-decoration: none; transition: background .2s ease, color .2s ease, transform .2s ease; }
+    .hero-cta:hover { background: var(--champagne); color: #172019; transform: translateY(-1px); }
+    .hero-note { color: #89938a; font-size: .76rem; letter-spacing: .04em; }
+    #heroContent { display: grid; grid-template-columns: minmax(0,.82fr) minmax(0,1.18fr); grid-template-rows: auto auto; align-items: center; column-gap: clamp(2rem,5vw,5rem); row-gap: 1.2rem; }
+    .service-picker { grid-column: 2; grid-row: 1; scroll-margin-top: 6rem; text-align: left !important; }
+    .service-picker .section-kicker { margin-bottom: .35rem; }
+    .service-picker > p { margin-bottom: .85rem !important; }
+    .service-picker > div.grid { max-width: none !important; padding: 0 !important; gap: .65rem !important; }
+    .tab-button { min-height: 104px; padding: .85rem !important; border-radius: 15px !important; }
+    .tab-button .tab-icon { width: 2.45rem !important; height: 2.45rem !important; margin-bottom: .55rem !important; }
+    .tab-button > span:first-of-type { font-size: .93rem !important; }
+    .tab-button > span:last-of-type { font-size: .7rem !important; }
+    .booking-panel { grid-column: 2; grid-row: 2; align-self: start; }
+    .booking-panel > div { padding: clamp(1.15rem,2.2vw,2rem) !important; }
+    .form-heading { display:flex; align-items:flex-end; justify-content:space-between; gap:1rem; margin-bottom:1.45rem; padding-bottom:1.1rem; border-bottom:1px solid var(--line); }
+    .form-heading .section-kicker { margin-bottom:.32rem; }
+    .form-heading h2 { margin:0; color:#f3efe5; font-size:1.24rem; font-weight:750; letter-spacing:.04em; }
+    .required-note { color:#929b91; font-size:.72rem; white-space:nowrap; }
+    #bookingForm { gap:1.15rem !important; }
+    #bookingForm label.block { color:#d5d5ca !important; font-size:.84rem !important; }
+    #bookingForm #sourceAddressControl p, #bookingForm #destAddressControl p { line-height:1.65; }
+    #bookingForm > div.grid { column-gap:1.1rem !important; row-gap:1rem !important; }
+    #quoteButton { margin-top:.15rem; }
+    .section-intro { max-width:45rem; margin:0 auto 2rem; text-align:center; }
+    .section-intro h2 { margin:0 0 .7rem; color:#f1eee5; font-size:clamp(1.5rem,2.8vw,2.15rem); font-weight:750; letter-spacing:.035em; line-height:1.4; }
+    .section-intro p { margin:0; color:#a2aaa2; font-size:.92rem; line-height:1.8; }
+    #advantages > div > div.grid, #fleet > div > div.grid { gap:1rem !important; }
+    #advantages > div > div.grid > div, #fleet > div > div.grid > div { padding:1.35rem !important; }
+    #advantages h2 { letter-spacing:.025em; }
+    #services { padding-top:4.5rem !important; padding-bottom:4.5rem !important; background:linear-gradient(180deg,#101613,#151e1a) !important; }
+    #services h2 { line-height:1.4; }
+    #fleet .fleet-intro { margin-bottom:1.75rem; }
+    .server-note { padding:1rem 1.2rem !important; border-left:3px solid var(--champagne) !important; border-radius:4px 14px 14px 4px !important; box-shadow:none !important; }
+    #quoteModal > div > div:first-child { padding-bottom:.35rem; }
+    #quoteModal .bg-slate-950\/60 { padding:1.2rem !important; }
+    #quoteModal .bg-slate-950\/60 p { line-height:1.7; overflow-wrap:anywhere; }
+    #quoteModal > div > div:first-child p:last-child { line-height:1.7; }
+    @media (max-width: 1023px) {
+      #heroContent { grid-template-columns:minmax(0,1fr); grid-template-rows:auto; max-width:46rem; }
+      .hero-copy, .service-picker, .booking-panel { grid-column:1; grid-row:auto; }
+      .hero-copy { max-width:100%; text-align:center; }
+      .hero-copy > p:not(.hero-eyebrow) { margin-inline:auto !important; }
+      .hero-actions { align-items:center; margin-top:1.15rem; }
+      .service-picker { text-align:center !important; }
+      .service-picker > div.grid { max-width:42rem !important; margin-inline:auto; }
+    }
+    @media (max-width: 640px) {
+      header > div { height:auto !important; min-height:4.3rem !important; flex-wrap:wrap; row-gap:.35rem; padding-top:.6rem; padding-bottom:.6rem; }
+      header nav { width:100%; justify-content:space-between; gap:.5rem !important; font-size:.75rem !important; padding-top:.35rem; border-top:1px solid var(--line); }
+      header nav a { padding:.32rem 0; }
+      .hero-copy h1 { font-size:clamp(1.9rem,8.5vw,2.6rem) !important; }
+      .hero-copy > p:not(.hero-eyebrow) { font-size:.92rem !important; }
+      .hero-note { font-size:.7rem; }
+      .service-picker > div.grid { gap:.55rem !important; }
+      .tab-button { min-height:105px; padding:.72rem .4rem !important; }
+      .tab-button > span:first-of-type { font-size:.88rem !important; }
+      .booking-panel > div { padding:1.05rem !important; }
+      .form-heading { align-items:flex-start; margin-bottom:1.1rem; }
+      .form-heading h2 { font-size:1.12rem; }
+      .required-note { padding-top:1rem; font-size:.67rem; }
+      #bookingForm { gap:1rem !important; }
+      #advantages, #services, #fleet { padding-top:3rem !important; padding-bottom:3rem !important; }
+      .section-intro { margin-bottom:1.4rem; text-align:left; }
+      .section-intro h2 { font-size:1.45rem; }
+      .section-intro p { font-size:.85rem; }
+      #advantages > div > div.grid > div, #fleet > div > div.grid > div { padding:1.15rem !important; }
+      .server-note { margin-top:-.25rem; }
+      #quoteModal > div > div.space-y-5 { gap:1rem; }
+    }
+
   </style>
 </head>
 <body class="bg-slate-900 text-slate-100 antialiased">
@@ -208,7 +285,7 @@
         <span class="text-xl sm:text-2xl font-bold tracking-widest text-white">車旅所<span class="text-amber-500">.</span></span>
         <span class="hidden sm:inline-block px-2.5 py-0.5 text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-full">機場・商務接送</span>
       </a>
-      <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+      <nav class="flex items-center gap-8 text-sm font-medium" aria-label="主要導覽">
         <a href="#advantages" class="text-slate-300 hover:text-amber-400 transition-colors">品牌優勢</a>
         <a href="#services" class="text-slate-300 hover:text-amber-400 transition-colors">服務方案</a>
         <a href="#fleet" class="text-slate-300 hover:text-amber-400 transition-colors">車隊介紹</a>
@@ -222,35 +299,41 @@
       <div class="absolute -top-40 -right-40 w-96 h-96 bg-amber-600/10 rounded-full blur-3xl"></div>
       <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl"></div>
 
-      <div class="relative max-w-5xl w-full flex flex-col items-center gap-6 sm:gap-8">
-        <div class="text-center">
+      <div id="heroContent" class="relative max-w-7xl w-full flex flex-col items-center gap-6 sm:gap-8">
+        <div class="hero-copy text-center lg:text-left">
+          <p class="hero-eyebrow">車旅所・專屬接送服務</p>
           <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-2 sm:mb-4 px-2">
             機場接送 尊榮安排 <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-600">車旅所</span>
           </h1>
           <p class="text-sm sm:text-base text-slate-400 max-w-2xl mx-auto px-4 leading-relaxed">
-            從機場往返到商務行程，讓每一段出發都從容。選擇接送服務，查看您的預估車資。
+            從機場往返到商務行程，讓每一段出發都從容。
           </p>
+          <div class="hero-actions">
+            <a href="#service-picker" class="hero-cta">開始安排行程 <i data-lucide="arrow-down-right" class="w-4 h-4"></i></a>
+            <span class="hero-note">選擇服務・確認地點・查看預估費用</span>
+          </div>
         </div>
 
-        <div class="w-full text-center">
-          <p class="text-xs sm:text-sm font-bold tracking-widest text-amber-500 uppercase mb-3">請選擇接送類型</p>
+        <div id="service-picker" class="service-picker w-full text-center">
+          <div class="section-kicker">第一步・選擇服務</div>
+          <p class="text-sm sm:text-base font-semibold text-slate-300 mb-4">請選擇接送類型</p>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 max-w-4xl mx-auto px-2">
-            <button data-tab="airport-send" class="tab-button active-tab flex flex-col items-center justify-center p-3 sm:p-5 bg-slate-800 border-2 border-amber-500 text-white rounded-xl shadow-lg hover:bg-slate-800/80 transition-all group">
+            <button data-tab="airport-send" aria-pressed="true" class="tab-button active-tab flex flex-col items-center justify-center p-3 sm:p-5 bg-slate-800 border-2 border-amber-500 text-white rounded-xl shadow-lg hover:bg-slate-800/80 transition-all group">
               <div class="tab-icon w-8 h-8 sm:w-12 sm:h-12 bg-amber-500/10 rounded-full flex items-center justify-center text-amber-500 mb-1.5 sm:mb-3"><i data-lucide="plane-takeoff" class="w-4 h-4 sm:w-6 sm:h-6"></i></div>
               <span class="font-extrabold text-sm sm:text-lg">預約送機</span>
               <span class="text-[10px] sm:text-xs text-amber-400/80 mt-0.5 sm:mt-1">前往機場</span>
             </button>
-            <button data-tab="airport-pickup" class="tab-button flex flex-col items-center justify-center p-3 sm:p-5 bg-slate-900 border border-slate-800 text-slate-400 rounded-xl hover:border-slate-700 hover:text-slate-200 transition-all group">
+            <button data-tab="airport-pickup" aria-pressed="false" class="tab-button flex flex-col items-center justify-center p-3 sm:p-5 bg-slate-900 border border-slate-800 text-slate-400 rounded-xl hover:border-slate-700 hover:text-slate-200 transition-all group">
               <div class="tab-icon w-8 h-8 sm:w-12 sm:h-12 bg-slate-800 rounded-full flex items-center justify-center text-slate-400 mb-1.5 sm:mb-3"><i data-lucide="plane-landing" class="w-4 h-4 sm:w-6 sm:h-6"></i></div>
               <span class="font-extrabold text-sm sm:text-lg">預約接機</span>
               <span class="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1">離開機場</span>
             </button>
-            <button data-tab="general-travel" class="tab-button flex flex-col items-center justify-center p-3 sm:p-5 bg-slate-900 border border-slate-800 text-slate-400 rounded-xl hover:border-slate-700 hover:text-slate-200 transition-all group">
+            <button data-tab="general-travel" aria-pressed="false" class="tab-button flex flex-col items-center justify-center p-3 sm:p-5 bg-slate-900 border border-slate-800 text-slate-400 rounded-xl hover:border-slate-700 hover:text-slate-200 transition-all group">
               <div class="tab-icon w-8 h-8 sm:w-12 sm:h-12 bg-slate-800 rounded-full flex items-center justify-center text-slate-400 mb-1.5 sm:mb-3"><i data-lucide="navigation-2" class="w-4 h-4 sm:w-6 sm:h-6"></i></div>
               <span class="font-extrabold text-sm sm:text-lg">商務接送</span>
               <span class="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1">公司・飯店・會議接送</span>
             </button>
-            <button data-tab="emergency" class="tab-button flex flex-col items-center justify-center p-3 sm:p-5 bg-slate-900 border border-slate-800 text-slate-400 rounded-xl hover:border-slate-700 hover:text-slate-200 transition-all group">
+            <button data-tab="emergency" aria-pressed="false" class="tab-button flex flex-col items-center justify-center p-3 sm:p-5 bg-slate-900 border border-slate-800 text-slate-400 rounded-xl hover:border-slate-700 hover:text-slate-200 transition-all group">
               <div class="tab-icon w-8 h-8 sm:w-12 sm:h-12 bg-slate-800 rounded-full flex items-center justify-center text-slate-400 mb-1.5 sm:mb-3"><i data-lucide="clock" class="w-4 h-4 sm:w-6 sm:h-6"></i></div>
               <span class="font-extrabold text-sm sm:text-lg">臨時預約</span>
               <span class="text-[10px] sm:text-xs text-red-400/80 mt-0.5 sm:mt-1 font-semibold">車輛需另行確認</span>
@@ -258,8 +341,9 @@
           </div>
         </div>
 
-        <div class="w-full bg-slate-800/80 border border-slate-700/50 rounded-2xl shadow-2xl backdrop-blur-md overflow-visible">
+        <div id="booking-panel" class="booking-panel w-full bg-slate-800/80 border border-slate-700/50 rounded-2xl shadow-2xl backdrop-blur-md overflow-visible">
           <div class="p-5 sm:p-8">
+            <div class="form-heading"><div><span class="section-kicker">第二步・行程資料</span><h2>安排您的接送行程</h2></div><span class="required-note">請填寫乘車資訊</span></div>
             <div id="emergencyWarning" class="hidden mb-6 p-4 bg-red-950/40 border-l-4 border-red-500 rounded-r-lg text-xs sm:text-sm text-red-300">
               <div class="flex items-start gap-2">
                 <i data-lucide="triangle-alert" class="w-5 h-5 shrink-0 mt-0.5 text-red-400"></i>
@@ -359,7 +443,9 @@
     </section>
 
     <section id="advantages" class="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-slate-900 border-t border-slate-800">
-      <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+      <div class="max-w-6xl mx-auto">
+        <div class="section-intro"><span class="section-kicker">OUR SERVICE</span><h2>讓每一段移動，都安排得恰到好處</h2><p>從機場到城市之間，為您的行程提供清楚、安心的接送選擇。</p></div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
         <div class="bg-slate-800/60 border border-slate-700 rounded-2xl p-5">
           <i data-lucide="map-pin" class="w-7 h-7 text-amber-400 mb-3"></i>
           <h2 class="font-extrabold text-white text-lg mb-2">機場往返</h2>
@@ -375,34 +461,38 @@
           <h2 class="font-extrabold text-white text-lg mb-2">多元車型</h2>
           <p class="text-sm text-slate-400 leading-relaxed">依同行人數與行李需求選擇車型，查看車資與加購費用。</p>
         </div>
+        </div>
       </div>
     </section>
 
     <section id="services" class="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-slate-950 border-t border-slate-800">
       <div class="max-w-5xl mx-auto text-center">
         <p class="text-xs font-bold tracking-widest text-amber-500 uppercase mb-3">Services</p>
-        <h2 class="text-2xl sm:text-3xl font-black text-white mb-4">送機、接機、商務接送、臨時預約</h2>
+        <h2 class="text-2xl sm:text-3xl font-black text-white mb-4">為不同旅程，安排合適接送</h2>
         <p class="text-sm sm:text-base text-slate-400 leading-relaxed max-w-3xl mx-auto">提供機場送機、接機與商務單程接送。請先查看預估車資，再洽客服確認預約與車輛安排。</p>
       </div>
     </section>
 
     <section id="fleet" class="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-slate-900 border-t border-slate-800">
-      <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="max-w-6xl mx-auto">
+        <div class="section-intro fleet-intro"><span class="section-kicker">OUR FLEET</span><h2>依照乘坐需求，選擇合適車型</h2><p>乘客與行李數量可於試算時一併填寫，實際車輛安排請洽客服確認。</p></div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         <div class="bg-slate-800 border border-slate-700 rounded-xl p-4"><p class="font-bold text-white">舒適四人座</p><p class="text-xs text-slate-400 mt-1">一般接送</p></div>
         <div class="bg-slate-800 border border-slate-700 rounded-xl p-4"><p class="font-bold text-white">尊榮進口車</p><p class="text-xs text-slate-400 mt-1">加價 +500</p></div>
         <div class="bg-slate-800 border border-slate-700 rounded-xl p-4"><p class="font-bold text-white">七人座商旅</p><p class="text-xs text-slate-400 mt-1">加價 +300</p></div>
         <div class="bg-slate-800 border border-slate-700 rounded-xl p-4"><p class="font-bold text-white">七人座尊爵</p><p class="text-xs text-slate-400 mt-1">加價 +2000</p></div>
+        </div>
       </div>
     </section>
   </main>
 
-  <div id="quoteModal" class="hidden fixed inset-0 z-[100] items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+  <div id="quoteModal" role="dialog" aria-modal="true" aria-labelledby="quoteDialogTitle" class="hidden fixed inset-0 z-[100] items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
     <div class="w-full max-w-md bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden">
       <div class="p-5 sm:p-6 space-y-5">
         <div class="text-center relative">
           <button id="closeModal" type="button" class="absolute right-0 top-0 text-slate-500 hover:text-slate-200"><i data-lucide="x" class="w-5 h-5"></i></button>
           <div class="w-14 h-14 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-3"><i data-lucide="sparkles" class="w-7 h-7"></i></div>
-          <h3 class="text-xl sm:text-2xl font-extrabold text-white">車資試算結果</h3>
+          <h3 id="quoteDialogTitle" class="text-xl sm:text-2xl font-extrabold text-white">車資試算結果</h3>
           <p class="text-xs sm:text-sm text-slate-400 mt-1">以下為預估費用，實際車資與車輛安排請洽客服確認。</p>
         </div>
         <div class="bg-slate-950/60 border border-slate-800 p-4 rounded-xl space-y-2.5 text-sm">
@@ -463,6 +553,7 @@
       activeTab = tab;
       document.querySelectorAll('.tab-button').forEach((btn) => {
         const active = btn.dataset.tab === tab;
+        btn.setAttribute("aria-pressed", String(active));
         btn.className = active
           ? 'tab-button active-tab flex flex-col items-center justify-center p-3 sm:p-5 bg-slate-800 border-2 border-amber-500 text-white rounded-xl shadow-lg hover:bg-slate-800/80 transition-all group'
           : 'tab-button flex flex-col items-center justify-center p-3 sm:p-5 bg-slate-900 border border-slate-800 text-slate-400 rounded-xl hover:border-slate-700 hover:text-slate-200 transition-all group';
@@ -719,5 +810,6 @@
   </script>
 </body>
 </html>
+
 
 
