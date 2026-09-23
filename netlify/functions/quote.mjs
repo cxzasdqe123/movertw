@@ -29,17 +29,6 @@ const airports = [
   },
 ];
 
-const airportPricing = {
-  '台北市': { TPE: 1100, TSA: 850 },
-  '臺北市': { TPE: 1100, TSA: 850 },
-  '文山區': { TPE: 1300, TSA: 900 },
-  '汐止區': { TPE: 1400, TSA: 1000 },
-  '新北市': { TPE: 1300, TSA: 1000 },
-  '桃園市': { TPE: 799 },
-  '新竹市': { TPE: 1800 },
-  '新竹縣': { TPE: 1900 },
-};
-
 const vehicleSurcharges = {
   comfort_4: 0,
   luxury_import: 500,
@@ -55,18 +44,6 @@ const json = (statusCode, body) => ({
   },
   body: JSON.stringify(body),
 });
-
-const detectZone = (text) => {
-  if (text.includes('文山')) return '文山區';
-  if (text.includes('汐止')) return '汐止區';
-  if (text.includes('台北')) return '台北市';
-  if (text.includes('臺北')) return '臺北市';
-  if (text.includes('新北')) return '新北市';
-  if (text.includes('桃園')) return '桃園市';
-  if (text.includes('新竹市')) return '新竹市';
-  if (text.includes('新竹縣')) return '新竹縣';
-  return null;
-};
 
 const quoteId = () => {
   const now = new Date();
@@ -134,15 +111,9 @@ async function computeDrivingRoute(apiKey, origin, destination) {
   };
 }
 
-function calculatePrice(originLabel, airportCode, distanceKm, vehicleType, addons = {}) {
-  const zone = detectZone(originLabel);
-  let basePrice = Math.max(Math.round(distanceKm * 20), 799);
-  let pricingMethod = '依行程距離計費，基本車資 NT$ 799 起';
-
-  if (zone && airportPricing[zone]?.[airportCode]) {
-    basePrice = airportPricing[zone][airportCode];
-    pricingMethod = `機場固定價目表：${zone} ⇄ ${airportCode}`;
-  }
+function calculatePrice(distanceKm, vehicleType, addons = {}) {
+  const basePrice = Math.max(Math.round(distanceKm * 20), 800);
+  const pricingMethod = '每公里 NT$ 20，基本車資最低 NT$ 800；車型與加購費用另計';
 
   const vehicleSurcharge = vehicleSurcharges[vehicleType] ?? 0;
   const addonPrice = (addons.sign ? 200 : 0) + (addons.childSeat ? 300 : 0);
@@ -198,9 +169,7 @@ export async function handler(event) {
   try {
     const route = await computeDrivingRoute(apiKey, origin, destination);
     const distanceKm = route.distanceMeters / 1000;
-    const nonAirport = pickup ? destination : origin;
-    const price = calculatePrice(nonAirport.address || nonAirport.name, airport?.code,
-      distanceKm, payload.vehicleType, isAirport ? (payload.addons || {}) : {});
+    const price = calculatePrice(distanceKm, payload.vehicleType, isAirport ? (payload.addons || {}) : {});
     const maps = new URL('https://www.google.com/maps/dir/');
     maps.searchParams.set('api', '1');
     maps.searchParams.set('travelmode', 'driving');
@@ -222,3 +191,4 @@ export async function handler(event) {
     return json(502, { error: '暫時無法取得行車路線，請稍後再試或洽客服確認車資。' });
   }
 }
+

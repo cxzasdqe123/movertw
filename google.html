@@ -286,7 +286,7 @@
         $('resultDistance').innerText = `${Number(quote.distanceKm).toFixed(1)} 公里`;
         $('resultMaps').href = quote.mapsUrl;
         $('resultDuration').innerText = formatDuration(quote.duration);
-        $('resultMethod').innerText = '依接送路線、所選車型及加購服務計算，實際費用請洽客服確認。';
+        $('resultMethod').innerText = quote.pricingMethod;
         $('resultPrice').innerText = `NT$ ${Number(quote.totalPrice).toLocaleString()}`;
         $('quoteModal').classList.remove('hidden');
         $('quoteModal').classList.add('flex');
@@ -340,4 +340,5 @@
   </script>
 </body>
 </html>
+
 

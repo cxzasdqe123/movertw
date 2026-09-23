@@ -76,7 +76,7 @@ Google Cloud 與 key restrictions 必須允許 Places API (New) 和 Routes API�
 
 `index.html` 的送機、接機、商務與臨時接送均呼叫 `/api/quote`。
 桃園機場起訖點固定使用 `33758桃園市大園區三石里航站南路9號`，顯示地址不變；依使用者確認，路線使用此地址的「臺灣桃園國際機場」Place ID `ChIJ1RXSYsCfQjQRCbG1qZC2o3A`，不可重新以地址解析到 3 號停車場，也不可使用機場中心裸座標。
-接機固定價依非機場端的行政區計算；商務與臨時接送不套機場固定價或加購。
+所有接送類型统一按距離計算基本車資，不再套用行政區或機場固定價；商務與臨時接送不套機場加購。
 Google Maps 比較連結保留相同 Place ID／機場地址，使用汽車、立即出發。
 路況、出發時間和使用者路線偏好仍可能使 Google Maps 顯示不同路線。
 
@@ -92,15 +92,10 @@ Google Maps 比較連結保留相同 Place ID／機場地址，使用汽車、�
 目前基本價格邏輯：
 
 ```text
-base_price = max(round(distance_km * 20), 799)
+base_price = max(round(distance_km * 20), 800)
 ```
 
-機場固定價優先，例如：
-
-- 臺北市 / 台北市 -> TPE: 1100
-- 文山區 -> TPE: 1300
-- 汐止區 -> TPE: 1400
-- 臺北市 / 台北市 -> TSA: 850
+使用 Google 回傳的原始公尺數換算公里計價，車資四捨五入至整元；畫面顯示的公里數不參與計算。
 
 車型加價：
 
@@ -211,4 +206,5 @@ curl -L -X POST https://flourishing-narwhal-f3b2fe.netlify.app/api/places/search
 - 不要在 Google Routes 失敗時用直線距離充數。
 - 不要加入大型框架或複雜後端，除非需求真的擴大。
 - 不要刪掉現有機場接送、車型加價、加購邏輯，除非需求明確要求。
+
 

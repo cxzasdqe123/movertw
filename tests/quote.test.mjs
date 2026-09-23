@@ -55,7 +55,7 @@ test('quote routes to the confirmed Taoyuan airport landmark with traffic-aware 
   const quote = JSON.parse(result.body);
   assert.equal(quote.distanceKm, 60.5);
   assert.equal(quote.duration, '2940s');
-  assert.equal(quote.totalPrice, 1800);
+  assert.equal(quote.totalPrice, 1210);
 });
 
 test('quote keeps coordinate waypoints as a fallback when place_id is unavailable', async (t) => {
@@ -107,3 +107,28 @@ test('quote keeps coordinate waypoints as a fallback when place_id is unavailabl
   assert.deepEqual(routeRequest.destination, { placeId: 'ChIJWSYUpPGrQjQROop1ttwNGJM' });
 });
 
+
+
+test('all services use 20 per km with an 800 minimum, ignoring former district prices', async t => {
+  const key = process.env.GOOGLE_MAPS_API_KEY;
+  process.env.GOOGLE_MAPS_API_KEY = 'test';
+  t.after(() => key === undefined ? delete process.env.GOOGLE_MAPS_API_KEY : process.env.GOOGLE_MAPS_API_KEY = key);
+  let meters = 0;
+  t.mock.method(globalThis, 'fetch', async () => new Response(JSON.stringify({
+    routes: [{ distanceMeters: meters, duration: '900s' }]
+  }), { status: 200 }));
+  const place = { place_id: 'test', address: '臺北市文山區測試地址', lat: 25, lng: 121 };
+  for (const serviceType of ['airport-send', 'airport-pickup', 'general-travel', 'emergency']) {
+    for (const [distance, expected] of [[10000, 800], [39999, 800], [40000, 800], [45884, 918], [60000, 1200]]) {
+      meters = distance;
+      const result = await handler({ httpMethod: 'POST', body: JSON.stringify({
+        serviceType, origin: place, destination: place, sourceAirportCode: 'TPE',
+        destinationAirportCode: 'TPE', vehicleType: 'comfort_4', totalPrice: 1
+      }) });
+      assert.equal(result.statusCode, 200);
+      const quote = JSON.parse(result.body);
+      assert.equal(quote.basePrice, expected, `${serviceType}, ${distance}m`);
+      assert.equal(quote.totalPrice, expected);
+    }
+  }
+});

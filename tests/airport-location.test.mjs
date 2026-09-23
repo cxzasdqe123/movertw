@@ -17,7 +17,7 @@ function mock(t, data = { routes: [{ distanceMeters: 42123, duration: '2700s' }]
   return requests;
 }
 const quote = payload => handler({ httpMethod: 'POST', body: JSON.stringify(payload) });
-test('pickup routes FROM confirmed airport landmark and prices destination district', async t => {
+test('pickup routes FROM confirmed airport landmark and uses distance pricing', async t => {
   const requests = mock(t);
   const result = await quote({ serviceType: 'airport-pickup', sourceAirportCode: 'TPE', destination: place,
     vehicleType: 'business_7', addons: { sign: true, childSeat: true } });
@@ -25,7 +25,7 @@ test('pickup routes FROM confirmed airport landmark and prices destination distr
   assert.deepEqual(requests[0].origin, { placeId: 'ChIJ1RXSYsCfQjQRCbG1qZC2o3A' });
   assert.deepEqual(requests[0].destination, { placeId: 'cafe' });
   const data = JSON.parse(result.body);
-  assert.equal(data.totalPrice, 1900);
+  assert.equal(data.totalPrice, 1642);
   const url = new URL(data.mapsUrl);
   assert.equal(url.searchParams.get('origin'), address);
   assert.equal(url.searchParams.get('origin_place_id'), 'ChIJ1RXSYsCfQjQRCbG1qZC2o3A');
@@ -68,3 +68,4 @@ test('homepage sends selected endpoints in correct direction for every mode', ()
   }
   assert.throws(() => vm.runInContext('selectedPlaces.source = null; buildQuotePayload()', context), /請先搜尋/);
 });
+
