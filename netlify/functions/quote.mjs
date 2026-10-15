@@ -47,15 +47,15 @@ function findTpeAreaFare(address) {
   const district = normalized.slice(cityStart + city.length).match(/[\u4e00-\u9fff]{1,4}(?:區|鎮|鄉|市)/)?.[0] || null;
   if (!city || !district) return null;
   const candidates = tpeAreaFares.filter(row => row.city === city && row.districts.includes(district));
-  if (candidates.length === 1) return candidates[0];
+  if (candidates.length === 1) return { ...candidates[0], matchedDistrict: district };
   if (!candidates.length) return null;
   const mountainHints = /山區|陽明山|司馬庫斯|安坑|華城|屈尺|直潭|九份|谷關|梨山|清境|日月潭|阿里山|菁山|擎天崗|平等里/;
   if (mountainHints.test(normalized)) {
     const mountain = candidates.find(row => /山區/.test(row.area));
-    if (mountain) return mountain;
+    if (mountain) return { ...mountain, matchedDistrict: district };
   }
   const standard = candidates.find(row => /平地|市區/.test(row.area));
-  return standard || null;
+  return standard ? { ...standard, matchedDistrict: district } : null;
 }
 
 const json = (statusCode, body) => ({
@@ -146,7 +146,7 @@ function calculatePrice(distanceKm, vehicleType, addons = {}, fareContext = {}) 
   const fareKey = `${direction}${isNineSeat ? '9' : '5'}`;
   const basePrice = areaFare ? areaFare[fareKey] : Math.max(Math.round(distanceKm * 20), 800);
   const pricingMethod = areaFare
-    ? `桃園機場固定區域價｜${areaFare.city}・${areaFare.area}｜${isNineSeat ? '9 人座' : '5 人座'}${fareContext.pickup ? '接機' : '送機'}；車型升級與加購另計`
+    ? `桃園機場固定區域價｜${areaFare.city}・${areaFare.matchedDistrict}｜${isNineSeat ? '9 人座' : '5 人座'}${fareContext.pickup ? '接機' : '送機'}固定價；車型升級與加購另計，偏遠或夜間費用請洽客服確認`
     : '依行車距離每公里 NT$ 20，基本車資最低 NT$ 800；車型與加購費用另計';
 
   const vehicleSurcharge = vehicleSurcharges[vehicleType] ?? 0;
