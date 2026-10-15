@@ -34,7 +34,7 @@ test('quote routes to the confirmed Taoyuan airport landmark with traffic-aware 
       origin: {
         place_id: 'test-origin-place-id',
         name: '測試起點',
-        address: '新竹市測試起點',
+        address: '新竹市東區測試起點',
         lat: 24.81,
         lng: 120.96,
       },
@@ -55,7 +55,7 @@ test('quote routes to the confirmed Taoyuan airport landmark with traffic-aware 
   const quote = JSON.parse(result.body);
   assert.equal(quote.distanceKm, 60.5);
   assert.equal(quote.duration, '2940s');
-  assert.equal(quote.totalPrice, 1210);
+  assert.equal(quote.totalPrice, 1300);
 });
 
 test('quote keeps coordinate waypoints as a fallback when place_id is unavailable', async (t) => {
@@ -109,26 +109,35 @@ test('quote keeps coordinate waypoints as a fallback when place_id is unavailabl
 
 
 
-test('all services use 20 per km with an 800 minimum, ignoring former district prices', async t => {
+test('Taoyuan airport uses the spreadsheet area fare and existing vehicle/add-on charges', async t => {
   const key = process.env.GOOGLE_MAPS_API_KEY;
   process.env.GOOGLE_MAPS_API_KEY = 'test';
   t.after(() => key === undefined ? delete process.env.GOOGLE_MAPS_API_KEY : process.env.GOOGLE_MAPS_API_KEY = key);
-  let meters = 0;
-  t.mock.method(globalThis, 'fetch', async () => new Response(JSON.stringify({
-    routes: [{ distanceMeters: meters, duration: '900s' }]
-  }), { status: 200 }));
-  const place = { place_id: 'test', address: '臺北市文山區測試地址', lat: 25, lng: 121 };
-  for (const serviceType of ['airport-send', 'airport-pickup', 'general-travel', 'emergency']) {
-    for (const [distance, expected] of [[10000, 800], [39999, 800], [40000, 800], [45884, 918], [60000, 1200]]) {
-      meters = distance;
-      const result = await handler({ httpMethod: 'POST', body: JSON.stringify({
-        serviceType, origin: place, destination: place, sourceAirportCode: 'TPE',
-        destinationAirportCode: 'TPE', vehicleType: 'comfort_4', totalPrice: 1
-      }) });
-      assert.equal(result.statusCode, 200);
-      const quote = JSON.parse(result.body);
-      assert.equal(quote.basePrice, expected, `${serviceType}, ${distance}m`);
-      assert.equal(quote.totalPrice, expected);
-    }
-  }
+  let meters = 45678;
+  t.mock.method(globalThis, 'fetch', async () => new Response(JSON.stringify({ routes: [{ distanceMeters: meters, duration: '900s' }] }), { status: 200 }));
+  const origin = { place_id: 'test-origin', address: '105臺北市松山區新聚里八德路四段389巷36號', lat: 25.05, lng: 121.56 };
+  const quoteFor = async (serviceType, vehicleType, addons = {}) => {
+    const result = await handler({ httpMethod: 'POST', body: JSON.stringify({ serviceType, origin, destinationAirportCode: 'TPE', sourceAirportCode: 'TPE', vehicleType, addons }) });
+    assert.equal(result.statusCode, 200);
+    return JSON.parse(result.body);
+  };
+  const send5 = await quoteFor('airport-send', 'comfort_4');
+  assert.equal(send5.basePrice, 1000);
+  assert.match(send5.pricingMethod, /台北市/);
+  const pickup5 = await handler({ httpMethod: 'POST', body: JSON.stringify({ serviceType: 'airport-pickup', destination: origin, sourceAirportCode: 'TPE', vehicleType: 'comfort_4' }) });
+  assert.equal(JSON.parse(pickup5.body).basePrice, 1100);
+  const business = await quoteFor('airport-send', 'business_7');
+  assert.equal(business.basePrice, 1400);
+  assert.equal(business.totalPrice, 1700);
+  const upgraded = await quoteFor('airport-send', 'luxury_import', { sign: true, childSeat: true });
+  assert.equal(upgraded.totalPrice, 2000);
+});
+
+test('non-Taoyuan routes keep the distance-based price rule', async t => {
+  const key = process.env.GOOGLE_MAPS_API_KEY;
+  process.env.GOOGLE_MAPS_API_KEY = 'test';
+  t.after(() => key === undefined ? delete process.env.GOOGLE_MAPS_API_KEY : process.env.GOOGLE_MAPS_API_KEY = key);
+  t.mock.method(globalThis, 'fetch', async () => new Response(JSON.stringify({ routes: [{ distanceMeters: 45884, duration: '900s' }] }), { status: 200 }));
+  const result = await handler({ httpMethod: 'POST', body: JSON.stringify({ serviceType: 'airport-send', origin: { place_id: 'origin', address: '台北市松山區測試地址', lat: 25.05, lng: 121.56 }, destinationAirportCode: 'TSA', vehicleType: 'comfort_4' }) });
+  assert.equal(JSON.parse(result.body).basePrice, 918);
 });
